@@ -55,7 +55,6 @@ class UsersController {
 
         };
 
-
         await database.run(`
         UPDATE users SET 
         name = (?), 

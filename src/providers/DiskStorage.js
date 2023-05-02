@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const path = require('path');
 
-const uploadConfig = require('../config/upload');
+const uploadConfig = require('../configs/upload');
 
 const AppError = require('../utils/AppError');
 
