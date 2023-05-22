@@ -18,7 +18,7 @@ class NotesController {
                 }
         });
 
-        await knex("links").inser(linksInsert);
+        await knex("links").insert(linksInsert);
 
         const tagsInsert = tags.map(name => {
             return {
@@ -28,7 +28,7 @@ class NotesController {
                 }
         });
 
-        await knex("tags").inser(tagsInsert);
+        await knex("tags").insert(tagsInsert);
 
         return response.json();
     };
@@ -85,6 +85,7 @@ class NotesController {
             .whereLike("notes.title", `%${title}%`)
             .whereIn("name", filterTags)
             .innerJoin("notes", "notes.id", "tags.note_id")
+            .groupBy("notes.id")
             .orderBy("notes.title");
 
         } else {
