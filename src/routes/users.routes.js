@@ -12,8 +12,10 @@ const userAvatarController = new UserAvatarController();
 
 const ensureAuthenticated = require("../middleware/ensureAuthenticated");
 
-usersRoutes.post("/", usersController.create);     
+usersRoutes.post("/", usersController.create);
+usersRoutes.get("/", ensureAuthenticated, usersController.read);
 usersRoutes.put("/", ensureAuthenticated, usersController.update);
 usersRoutes.patch("/avatar", ensureAuthenticated, upload.single("avatar"), userAvatarController.update);
+usersRoutes.delete("/", ensureAuthenticated, usersController.delete);
 
 module.exports = usersRoutes;

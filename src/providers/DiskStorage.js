@@ -8,9 +8,10 @@ const AppError = require('../utils/AppError');
 
 class DiskStorage {
     async saveFile(file) {
-        const originalPath = path.resolve(uploadConfig.tmpFolder, file.filename);
 
-        const newPath = path.resolve(uploadConfig.uploadsFolder, file.filename);
+        const originalPath = path.resolve(uploadConfig.TMP_FOLDER, file);
+
+        const newPath = path.resolve(uploadConfig.UPLOAD_FOLDER, file);
 
         await fs.promises.rename(originalPath, newPath);
 
@@ -18,15 +19,15 @@ class DiskStorage {
     }
 
     async deleteFile(file) {
-        const filePah = path.resolve(uploadConfig.UPLOADS_FOLDER, file);
+        const filePath = path.resolve(uploadConfig.UPLOAD_FOLDER, file);
 
         try {
-            await fs.promises.stat(filePah);
+            await fs.promises.stat(filePath);
         } catch {
             throw new AppError('File not found', 404);
         };
 
-        await fs.promises.unlink(filePah);
+        await fs.promises.unlink(filePath);
 
     }
 }

@@ -1,16 +1,21 @@
-const { default: knex } = require("knex");
+const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
 const DiskStorage = require("../providers/DiskStorage");
 
 class UserAvatarController {
   async update(request, response) {
+
+    console.log("8:", request.user);
+
     const user_id = request.user.id;
     const avatarFilename = request.file.filename;
 
     const diskStorage = new DiskStorage();
 
     const user = await knex("users")
-    .where({ id: user_id })
+    .where({
+      id: user_id
+    })
     .first();
 
     if(!user) {
@@ -26,7 +31,9 @@ class UserAvatarController {
 
     await knex("users")
     .update(user)
-    .where({ id: user_id });
+    .where({
+      id: user_id
+    });
 
     return response.json(user);
   }

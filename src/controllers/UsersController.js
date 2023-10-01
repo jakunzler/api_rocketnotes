@@ -17,9 +17,23 @@ class UsersController {
 
         await database.run("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, passwordHash]);
 
-        response.status(201).json();
+        return response.status(201).json();
     }
-    
+
+    //flow to read info from a specific user
+    async read(request, response) {
+        const user_id = request.user.id;
+
+        const database = await sqliteConnection();
+        const user = await database.get("SELECT * FROM users WHERE id = (?)", [user_id]);
+
+        if(!user) {
+            throw new AppError("User does not exist.");
+        };
+        
+        return response.status(200).json(user);
+    }
+
     async update(request, response) {
         const { name, email, password, old_password } = request.body;
         const user_id = request.user.id;
@@ -64,8 +78,25 @@ class UsersController {
         WHERE id = (?)`, 
         [user.name, user.email, user.password, user_id]);
 
-        response.status(200).json();
+        return response.status(200).json();
     }
+
+    //flow to delete a specific user
+    async delete(request, response) {
+        const user_id = request.user.id;
+
+        const database = await sqliteConnection();
+        const user = await database.get("SELECT * FROM users WHERE id = (?)", [user_id]);
+
+        if(!user) {
+            throw new AppError("User does not exist.");
+        };
+
+        await database.run("DELETE FROM users WHERE id = (?)", [user_id]);
+
+        return response.status(200).json();
+    }
+
 }
 
 module.exports = UsersController;
