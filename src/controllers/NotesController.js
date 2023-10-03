@@ -20,7 +20,6 @@ class NotesController {
                 }
             });
 
-            // Aguarda a inserção dos links
             await knex('links').insert(linksInsert);
 
             const tagsInsert = tags.map(name => {
@@ -31,7 +30,6 @@ class NotesController {
                 }
             });
 
-            // Aguarda a inserção das tags
             await knex('tags').insert(tagsInsert);
 
             return response.json({ message: "Notas, links e tags criados com sucesso!" });
@@ -79,12 +77,15 @@ class NotesController {
     };
 
     async index(request, response) {
-        const { title } = request.body;
+        const title = request.body.title ? request.body.title : request.query.title;
 
-        const notes = await knex("users")
+        const notes = title ?
+        await knex("users")
         .join("notes", "notes.user_id", "users.id")
-        .where("notes.title", "like", `%${title || " "}%`);
-      
+        .where("notes.title", "like", `%${title}%`) :
+        await knex("users")
+        .join("notes", "notes.user_id", "users.id")
+        
         const notesWithTagsAndLinks = await Promise.all(
             notes.map(async (note) => {
             const tags = await knex("tags")
@@ -100,6 +101,7 @@ class NotesController {
             };
             })
         );
+
         return response.json(notesWithTagsAndLinks);
     };
 }
